@@ -3,13 +3,17 @@ const path = require('path');
 const fs = require('fs');
 const { startBot, stopBot, isRunning } = require('./engine');
 
+const BASE_WIDTH = 240;
+const LOG_WIDTH = 432;
+
 const bots = JSON.parse(fs.readFileSync(path.join(__dirname, 'bots.json'), 'utf8'));
 let win;
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 360,
-        height: 480,
+        width: BASE_WIDTH,
+        height: 240,
+        useContentSize: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -39,4 +43,12 @@ ipcMain.handle('bot:start', (event, id) => {
     win.webContents.send('bot:status', id, true);
 });
 
-ipcMain.handle('bot:stop', (event, id) => stopBot(id));
+ipcMain.handle('bot:stop', (event, id) => {
+    console.log('stopping bot');
+    stopBot(id);
+});
+
+ipcMain.handle('window:setLogOpen', (event, open) => {
+    const [, height] = win.getContentSize();
+    win.setContentSize(open ? BASE_WIDTH + LOG_WIDTH : BASE_WIDTH, height);
+})

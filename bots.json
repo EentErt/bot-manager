@@ -2,7 +2,7 @@
     {
         "id": "raid",
         "name": "nate-bot",
-        "icon": "/images/nate-bot.png",
+        "icon": "images/nate-bot.jpg",
         "cwd": "D:\\dev\\discord-bot"
     }
 ]

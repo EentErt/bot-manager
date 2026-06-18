@@ -7,4 +7,6 @@ contextBridge.exposeInMainWorld('botAPI', {
 
     onLog: (cb) => ipcRenderer.on('bot:log', (e, id, line) => cb(id, line)),
     onStatus: (cb) => ipcRenderer.on('bot:status', (e, id, running) => cb(id, running)),
+
+    setLogOpen: (open) => ipcRenderer.invoke('window:setLogOpen', open),
 });

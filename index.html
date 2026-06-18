@@ -1,40 +1,86 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8" /><title>Bot Manager</title><link rel="stylesheet" href="styles.css"></head>
+<head>
+  <meta charset="utf-8" />
+  <title>Bot Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-  <div id="bots"></div>
-  <pre id="log" style="height:160px;overflow:auto;"></pre>
+  <div class="app">
+    <div class="bots-panel">
+      <div class="header">
+        <h1>Bots</h1>
+        <button id="toggle-log">Logs ></button>
+      </div>
+      <div id="bots"></div>
+    </div>
+
+    <div class="log-panel collapsed" id="logPanel">
+      <pre id="log" style="height:160px;overflow:auto;"></pre>
+    </div>
+  </div>
 
   <script>
     const botsEl = document.getElementById('bots');
     const logEl  = document.getElementById('log');
 
+    let logOpen = false;
+
+    /*
+    const grid = document.createElement('div')
+    grid.className = 'row-grid'
+    grid.
+    */
+
     async function render() {
       const bots = await window.botAPI.list();
       botsEl.innerHTML = '';
       for (const bot of bots) {
-        const btn = document.createElement('button');
-        btn.dataset.id = bot.id;
-        btn.dataset.running = bot.running;
-        btn.textContent = bot.running ? 'Stop' : 'Start';
-        btn.onclick = () =>
-          btn.dataset.running === 'true' ? window.botAPI.stop(bot.id)
-                                         : window.botAPI.start(bot.id);
         const row = document.createElement('div');
-        row.append(`${bot.name} `, btn);
+        row.className = 'bot-row';
+        row.dataset.id = bot.id;
+        row.dataset.running = bot.running;
+
+        const icon = document.createElement('img');
+        icon.src = bot.icon;
+        icon.alt = bot.name;
+
+        const name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = bot.name;
+
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (bot.running ? ' running' : '');
+
+        const btn = document.createElement('button');
+        btn.textContent = bot.running ? 'Stop' : 'Start';
+        btn.onclick = () => {
+          row.dataset.running === 'true' ? window.botAPI.stop(bot.id)
+                                        : window.botAPI.start(bot.id);
+        }
+
+        row.append(icon, name, dot, btn);
         botsEl.append(row);
       }
     }
 
     window.botAPI.onStatus((id, running) => {
-      const btn = botsEl.querySelector(`button[data-id="${id}"]`);
-      if (btn) { btn.dataset.running = running; btn.textContent = running ? 'Stop' : 'Start'; }
+      const row = botsEl.querySelector(`.bot-row[data-id="${id}"]`);
+      if (!row) return;
+      row.dataset.running = running;
+      row.querySelector('.dot').classList.toggle('running', running);
+      row.querySelector('button').textContent = running ? 'Stop' : 'Start';
     });
 
     window.botAPI.onLog((id, line) => {
       logEl.textContent += `[${id}] ${line}`;
       logEl.scrollTop = logEl.scrollHeight;
     });
+
+    document.getElementById('toggle-log').onclick = () => {
+      logOpen = !logOpen;
+      window.botAPI.setLogOpen(logOpen);
+    }
 
     render();
   </script>
