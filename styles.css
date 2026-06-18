@@ -1,0 +1,56 @@
+body { 
+    font-family: system-ui, sans-serif;
+    background: #1e1f22;
+    color: #e3e5e8;
+    padding: 12px;
+    margin: 0;
+}
+
+.bot-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+    background: #2b2d31; 
+    border-radius: 8px; 
+    padding: 8px; 
+    margin-bottom: 6px; 
+}
+
+.bot-row img  { 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 6px; 
+}
+
+.bot-row .name { 
+    flex: 1; 
+}                       /* takes leftover space, pushes the button right */
+
+.dot { 
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%; 
+    background: #777; 
+}
+
+.dot.running { 
+    background: #43b581; 
+}              /* green when the bot is on */
+
+button { 
+    background: #5865f2; 
+    color: #fff; border: none; 
+    border-radius: 6px; 
+    padding: 6px 12px; 
+    cursor: pointer; 
+}
+
+#log   { 
+    background: #111; 
+    color: #9ad; 
+    font-family: monospace; 
+    height: 160px; 
+    overflow: auto; 
+    padding: 8px; 
+    border-radius: 8px; 
+}
