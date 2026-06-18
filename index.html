@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" /><title>Bot Manager</title></head>
+<body>
+  <div id="bots"></div>
+  <pre id="log" style="height:160px;overflow:auto;"></pre>
+
+  <script>
+    const botsEl = document.getElementById('bots');
+    const logEl  = document.getElementById('log');
+
+    async function render() {
+      const bots = await window.botAPI.list();
+      botsEl.innerHTML = '';
+      for (const bot of bots) {
+        const btn = document.createElement('button');
+        btn.dataset.id = bot.id;
+        btn.dataset.running = bot.running;
+        btn.textContent = bot.running ? 'Stop' : 'Start';
+        btn.onclick = () =>
+          btn.dataset.running === 'true' ? window.botAPI.stop(bot.id)
+                                         : window.botAPI.start(bot.id);
+        const row = document.createElement('div');
+        row.append(`${bot.name} `, btn);
+        botsEl.append(row);
+      }
+    }
+
+    window.botAPI.onStatus((id, running) => {
+      const btn = botsEl.querySelector(`button[data-id="${id}"]`);
+      if (btn) { btn.dataset.running = running; btn.textContent = running ? 'Stop' : 'Start'; }
+    });
+
+    window.botAPI.onLog((id, line) => {
+      logEl.textContent += `[${id}] ${line}`;
+      logEl.scrollTop = logEl.scrollHeight;
+    });
+
+    render();
+  </script>
+</body>
+</html>

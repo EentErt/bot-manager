@@ -1,0 +1,15 @@
+{
+  "name": "bot-manager",
+  "version": "1.0.0",
+  "description": "interface for managing bot hosting",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^42.4.1"
+  }
+}
