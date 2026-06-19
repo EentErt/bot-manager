@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { startBot, stopBot, isRunning } = require('./engine');
@@ -9,11 +9,21 @@ const LOG_WIDTH = 432;
 const bots = JSON.parse(fs.readFileSync(path.join(__dirname, 'bots.json'), 'utf8'));
 let win;
 
+Menu.setApplicationMenu(null)
+
 function createWindow() {
     win = new BrowserWindow({
         width: BASE_WIDTH,
         height: 240,
         useContentSize: true,
+        /*
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: '#1e1f22',        // background behind the buttons
+            symbolColor: '#e3e5e8',  // the glyph color (the ✕, –, ☐)
+            height: 32,
+        },
+        */
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -44,7 +54,6 @@ ipcMain.handle('bot:start', (event, id) => {
 });
 
 ipcMain.handle('bot:stop', (event, id) => {
-    console.log('stopping bot');
     stopBot(id);
 });
 
